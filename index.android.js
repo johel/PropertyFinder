@@ -4,7 +4,8 @@ import {
   StyleSheet,
   Text,
   View,
-  AppRegistry
+  AppRegistry,
+  Navigator
 } from 'react-native';
 
 const styles = StyleSheet.create({
@@ -21,12 +22,32 @@ const styles = StyleSheet.create({
   }
 });
 
-class PropertyFinderApp extends Component {
+class HelloFinder extends Component {
   render() {
     return (
-      <View style={styles.container}>
         <Text style={styles.text}>Property Finder</Text>
-      </View>
+    );
+  }
+}
+
+const ROUTES = {
+  helloFinder: HelloFinder
+};
+
+class PropertyFinderApp extends Component {
+
+  renderScene(route, navigator) {
+    var Component = ROUTES[route.name];
+    return <Component route={route} navigator={navigator} />;
+  }
+
+  render() {
+    return (
+      <Navigator
+        sceneStyle={styles.container}
+        initialRoute={{name: 'helloFinder'}}
+        renderScene={this.renderScene.bind(this)}
+        configureScene={() => Navigator.SceneConfigs.FloatFromRight}/>
     );
   }
 }
