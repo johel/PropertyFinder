@@ -8,30 +8,10 @@ import {
   Navigator
 } from 'react-native';
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#F5FCFF',
-  },
-  text:{
-    color:'blue',
-    fontSize: 30,
-    margin: 80
-  }
-});
-
-class HelloFinder extends Component {
-  render() {
-    return (
-        <Text style={styles.text}>Property Finder</Text>
-    );
-  }
-}
+import SearchPage from './src/SearchPage';
 
 const ROUTES = {
-  helloFinder: HelloFinder
+  searchPage: SearchPage
 };
 
 class PropertyFinderApp extends Component {
@@ -44,8 +24,7 @@ class PropertyFinderApp extends Component {
   render() {
     return (
       <Navigator
-        sceneStyle={styles.container}
-        initialRoute={{name: 'helloFinder'}}
+        initialRoute={{name: 'searchPage'}}
         renderScene={this.renderScene.bind(this)}
         configureScene={() => Navigator.SceneConfigs.FloatFromRight}/>
     );
