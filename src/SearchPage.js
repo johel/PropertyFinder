@@ -90,7 +90,13 @@ export default class SearchPage extends Component {
 	_handleResponse(response) {
 	  this.setState({ isLoading: false , message: '' });
 	  if (response.application_response_code.substr(0, 1) === '1') {
-	  	this.setState({ message: 'Properties found: ' + response.listings.length});
+	  	// o objeto passado dentro do push correspondera ao parametro route na renderScene(route, navigator) 
+	  	// onde renderScene eh uma propriedade no componente Navigation. Portanto passProps eh apenas uma convencao
+	  	this.props.navigator.push({
+			  name: 'searchResults',
+			  passProps: {listings: response.listings}
+			});
+
 	  }else {
 	    this.setState({ message: 'Location not recognized; please try again.'});
 	  }

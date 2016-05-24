@@ -9,16 +9,18 @@ import {
 } from 'react-native';
 
 import SearchPage from './src/SearchPage';
+import SearchResults from './src/SearchResults';
 
 const ROUTES = {
-  searchPage: SearchPage
+  searchPage: SearchPage,
+  searchResults: SearchResults
 };
 
 class PropertyFinderApp extends Component {
 
   renderScene(route, navigator) {
     var Component = ROUTES[route.name];
-    return <Component route={route} navigator={navigator} />;
+    return <Component {...route.passProps} navigator={navigator} />;
   }
 
   render() {
