@@ -5,14 +5,14 @@ import {
   TextInput,
   View,
   TouchableHighlight,
-  ProgressBar,
+  ProgressBarAndroid,
   Image
 } from 'react-native';
 
 import houseSrc from '../resources/house.png';
 
 
-
+const BLUE = '#48BBEC';
 
 //searchInput border is not applying probably because of android issues
 //Text Input Border: https://facebook.github.io/react-native/docs/known-issues.html
@@ -69,7 +69,41 @@ const styles = StyleSheet.create({
 
 export default class SearchPage extends Component {
 
+	constructor(props) {
+	  super(props);
+	  this.onSearchTextChanged = this.onSearchTextChanged.bind(this);
+	  this.onSearchPressed = this.onSearchPressed.bind(this);
+	  this.state = {
+	    searchString: 'london',
+	    isLoading:false
+	  };
+	}
+
+	onSearchTextChanged(event) {
+	  console.log('onSearchTextChanged');
+	  this.setState({ searchString: event.nativeEvent.text });
+	  console.log(this.state.searchString);
+	}
+
+	_executeQuery(query) {
+	  console.log(query);
+	  this.setState({ isLoading: true });
+	  setTimeout(()=>this.setState({ isLoading: false }),3000);
+	}
+ 
+	onSearchPressed() {
+	  this._executeQuery();
+	}
+
   render() {
+
+  	  var progressBar = this.state.isLoading ?
+		    (<View>
+		      <ProgressBarAndroid color={BLUE} />
+		    </View> ) : (<View/>);
+
+
+
     return (
       <View style={styles.container}>
 
@@ -82,18 +116,26 @@ export default class SearchPage extends Component {
 
 	     	<View style={styles.flowRight}>
 				  <TextInput
+				  	onChange={this.onSearchTextChanged}
 				    style={styles.searchInput}
+				    value={this.state.searchString}
 				    placeholder='Search via name or postcode'/>
-				  <TouchableHighlight style={styles.button}
+				  <TouchableHighlight 
+				  		onPress={this.onSearchPressed}
+				  		style={styles.button}
 				      underlayColor='#99d9f4'>
 				    <Text style={styles.buttonText}>Go</Text>
 				  </TouchableHighlight>
 				</View>
+
 				<TouchableHighlight style={styles.button}
 				    underlayColor='#99d9f4'>
 				  <Text style={styles.buttonText}>Location</Text>
 				</TouchableHighlight>
+
 				<Image source={houseSrc} style={styles.image}/>
+
+				{progressBar}
 
       </View>
     );
