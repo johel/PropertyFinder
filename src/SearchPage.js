@@ -9,6 +9,7 @@ import {
   Image
 } from 'react-native';
 
+import {urlForQueryAndPage} from './api';
 import houseSrc from '../resources/house.png';
 
 
@@ -75,7 +76,8 @@ export default class SearchPage extends Component {
 	  this.onSearchPressed = this.onSearchPressed.bind(this);
 	  this.state = {
 	    searchString: 'london',
-	    isLoading:false
+	    isLoading:false,
+	    message: ''
 	  };
 	}
 
@@ -85,14 +87,32 @@ export default class SearchPage extends Component {
 	  console.log(this.state.searchString);
 	}
 
+	_handleResponse(response) {
+	  this.setState({ isLoading: false , message: '' });
+	  if (response.application_response_code.substr(0, 1) === '1') {
+	  	this.setState({ message: 'Properties found: ' + response.listings.length});
+	  }else {
+	    this.setState({ message: 'Location not recognized; please try again.'});
+	  }
+	}
+
 	_executeQuery(query) {
 	  console.log(query);
 	  this.setState({ isLoading: true });
-	  setTimeout(()=>this.setState({ isLoading: false }),3000);
+	  fetch(query)
+		  .then(response => response.json())
+		  .then(json => this._handleResponse(json.response))
+		  .catch(error =>
+		     this.setState({
+		      isLoading: false,
+		      message: 'Something bad happened ' + error
+		   }));
 	}
  
 	onSearchPressed() {
-	  this._executeQuery();
+		var query = urlForQueryAndPage('place_name', this.state.searchString, 1);
+		// this.setState({ message: `query is ${query}`});
+	  this._executeQuery(query);
 	}
 
   render() {
@@ -136,7 +156,7 @@ export default class SearchPage extends Component {
 				<Image source={houseSrc} style={styles.image}/>
 
 				{progressBar}
-
+				<Text style={styles.description}>{this.state.message}</Text>
       </View>
     );
   }
